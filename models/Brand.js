@@ -31,8 +31,8 @@ const BrandSchema = new Schema({
 
 // compile the schema to model
 
-// const Brand = mongoose.model("Brand", BrandSchema);
-const Brand = mongoose.models.Brand || mongoose.model("Brand", BrandSchema);
+const Brand = mongoose.model("Brand", BrandSchema);
+// const Brand = mongoose.models.Brand || mongoose.model("Brand", BrandSchema);
 
 
 export default Brand;
