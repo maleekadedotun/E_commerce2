@@ -1,4 +1,4 @@
-import Brand from "../models/brand.js";
+import Brand from "../models/Brand.js";
 import Category from "../models/Category.js";
 import Product from "../models/Product.js";
 import asyncHandler from "express-async-handler";
