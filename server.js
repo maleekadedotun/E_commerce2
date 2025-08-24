@@ -1,7 +1,7 @@
 import http from "http";
 
 import app from "./app/app.js";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
 
 // mongoose

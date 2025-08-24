@@ -5,7 +5,6 @@ import upload from "../config/fileUpload.js";
 
 const categoriesRouter = express.Router();
 
-
 categoriesRouter.post("/", isLoggedIn, upload.single("file"), createCategoryCtrl)
 categoriesRouter.get("/", getAllCategoryCtrl)
 categoriesRouter.get("/:id", getSingleCategoryCtrl)

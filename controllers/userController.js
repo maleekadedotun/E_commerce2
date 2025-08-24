@@ -104,7 +104,7 @@ export const updateShippingAddressCtrl = asyncHandler(async(req, res) =>{
     },
     {
         new: true,
-    }
+    }    
     )
         res.json({
         status: "Success",   

@@ -53,7 +53,7 @@ const OrderSchema = new Schema({
 
 }, 
     {
-        timeStamps: true,
+        timestamps: true,
     }
 );
 

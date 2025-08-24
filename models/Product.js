@@ -46,7 +46,7 @@ const ProductSchema = new Schema({
     images: [
         {
             type: String,
-            default: "https://via.placeholder.com/150",
+            // default: "https://via.placeholder.com/150",
         }
     ],
     reviews:  [
@@ -100,7 +100,7 @@ ProductSchema.virtual("averageRating").get(function(){
     const product = this;
     product?.reviews?.forEach((review) =>{
         ratingsTotal += review?.rating;
-    })
+    });
     // calc the average rating
     const averageRating = Number(ratingsTotal / product?.reviews?.length).toFixed(1);
     // console.log(averageRating);

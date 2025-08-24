@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config()
 import express from "express";
+import cors from "cors";
 import dbConnect from "../config/dbConnect.js";
 import userRoutes from "../routes/userRoute.js";
 import Stripe from "stripe"
@@ -16,11 +17,14 @@ import couponRoutes from "../routes/couponRoutes.js";
 
 
 //db Connect
+dbConnect();
 const app = express();
+// cors
+app.use(cors());
 
 // Stripe webHook
 // stripe instance
-const stripe = new Stripe(process.env.STRIPE_KEY)
+const stripe = new Stripe(process.env.STRIPE_KEY);
 
 
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
@@ -106,8 +110,5 @@ app.use("/api/v1/coupons", couponRoutes);
 app.use(notFound);
 app.use(globalErrHandler);
 
-
-dbConnect();
-
-
+//   npm run server to start sever.
 export default app;

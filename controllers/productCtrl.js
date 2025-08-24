@@ -10,9 +10,12 @@ import asyncHandler from "express-async-handler";
 
 export const createProductCtrl = asyncHandler(async (req, res) =>{ 
     // console.log("Receive image",req.files); 
-   
-
-const convertedImages = req.files.map(file => file.path);
+    // console.log("REQ.FILES", req.files);
+    // console.log("REQ.BODY:", req.body);
+    if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ message: "No files uploaded" });
+    }
+    const convertedImages = req.files.map(file => file.path);
 
     
     const {name, description,category, sizes, colors, price, totalQty, brand} = req.body
@@ -58,101 +61,199 @@ const convertedImages = req.files.map(file => file.path);
     // resave
     await brandFound.save();
     
-    res.json({
-        msg: "Success",
-        status: "Product created successfully",
+    // res.json({
+    //     msg: "Success",
+    //     status: "Product created successfully",
+    //     product,
+    // })
+    res.status(200).json({
+        status: "success",
+        message: "Product created successfully",
         product,
-    })
+    });
+
 });
 
 // @desc Get all products
 // @route GET/api/v1/products
 // @access Public
 
-export const getProductsCtrl = asyncHandler(async (req, res) =>{
-    // console.log(req.query);
-    
-    // Query
-    let productQuery = Product.find();
+// export const getProductsCtrl = asyncHandler(async (req, res) =>{
+//     // console.log(req.query);
+//     // console.log("GET /products HIT"); // inside controller
+//     // console.log("🔐 Auth Header:", req.headers.authorization);
+
+//     // Query
+//     let productQuery = Product.find();
    
-    // Search by name
-    if (req.query.name) {
-        productQuery = productQuery.find({
-            name:{$regex: req.query.name, $options: "i"},
-        })
-    }    
+//     // Search by name
+//     if (req.query.name) {
+//         productQuery = productQuery.find({
+//             name:{$regex: req.query.name, $options: "i"},
+//         })
+//     }    
 
-    // filter by brand
-    if (req.query.brand) {
-        productQuery = productQuery.find({
-            brand:{$regex: req.query.brand, $options: "i"},
-        })
-    }  
+//     // if (req.query.category) {
+//     //     productQuery = productQuery.find({
+//     //         category: { $regex: req.query.category, $options: "i" },
+//     //     });
+//     // }
 
-    // filter by colors
-    if (req.query.colors) {
-        productQuery = productQuery.find({
-            colors:{$regex: req.query.colors, $options: "i"},
-        })
-    } 
+//     // filter by brand
+//     if (req.query.brand) {
+//         productQuery = productQuery.find({
+//             brand:{$regex: req.query.brand, $options: "i"},
+//         })
+//     }  
 
-    // filter by sizes
-    if (req.query.sizes) {
-        productQuery = productQuery.find({
-            sizes:{$regex: req.query.sizes, $options: "i"},
-        })
-    }
+//     // filter by colors
+//     if (req.query.colors) {
+//         productQuery = productQuery.find({
+//             colors:{$regex: req.query.colors, $options: "i"},
+//         })
+//     } 
 
-    // filter price range
-    if (req.query.price) {
-        const priceRange = req.query.price.split("-")
-        //gte: greater than or equal to
-        //lte: less than or equal to
-        productQuery = productQuery.find({
-            price:{$gte: priceRange[0], $lte: priceRange[1]},
-        })
-        // console.log(priceRange);
+//     // filter by sizes
+//     if (req.query.sizes) {
+//         productQuery = productQuery.find({
+//             sizes:{$regex: req.query.sizes, $options: "i"},
+//         })
+//     }
+
+//     // filter price range
+//     if (req.query.price) {
+//         const priceRange = req.query.price.split("-")
+//         //gte: greater than or equal to
+//         //lte: less than or equal to
+//         productQuery = productQuery.find({
+//             price:{$gte: priceRange[0], $lte: priceRange[1]},
+//         })
+//         // console.log(priceRange);
         
         
-    }
-    //pagination
-    //page
-    const page = parseInt(req.query.page) ? parseInt(req.query.page) : 1;
-    //limit
-    const limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
-    //startIdx
-    const startIndex = (page -1) * limit ;
-    //endIdx
-    const endIndex = page * limit;
-    //total
-    const total = await Product.countDocuments()
+//     }
+//     //pagination
+//     //page
+//     const page = parseInt(req.query.page) ? parseInt(req.query.page) : 1;
+//     //limit
+//     const limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
+//     //startIdx
+//     const startIndex = (page -1) * limit ;
+//     //endIdx
+//     const endIndex = page * limit;
+//     //total
+//     const total = await Product.countDocuments()
 
-    productQuery =productQuery.skip(startIndex).limit(limit)
+//     productQuery =productQuery.skip(startIndex).limit(limit)
 
-    const pagination ={}
-    if (endIndex < total) {
-        pagination.next = {
-            page: page + 1,
-            limit,
-        }
-    }
-    if (startIndex > 0) {
-        pagination.prev = {
-            page: page - 1,
-            limit,
-        }
-    }
+//     const pagination ={}
+//     if (endIndex < total) {
+//         pagination.next = {
+//             page: page + 1,
+//             limit,
+//         }
+//     }
+//     if (startIndex > 0) {
+//         pagination.prev = {
+//             page: page - 1,
+//             limit,
+//         }
+//     }
     
-    // await the Query
-     const  products = await productQuery
-    res.json({
-        status: "Success",
-        total,
-        results: products.length,
-        pagination,
-        message: "Product fetched successfully",
-        products,
-    })
+//     // await the Query
+//      const  products = await productQuery
+//     res.json({
+//         status: "Success",
+//         total,
+//         results: products.length,
+//         pagination,
+//         message: "Product fetched successfully",
+//         products,
+//     })
+// });
+
+
+export const getProductsCtrl = asyncHandler(async (req, res) => {
+  let productQuery = Product.find();
+
+  // Search by name
+  if (req.query.name) {
+    productQuery = productQuery.find({
+      name: { $regex: req.query.name, $options: "i" },
+    });
+  }
+
+  // ✅ Filter by category
+  if (req.query.category) {
+    productQuery = productQuery.find({
+      category: { $regex: req.query.category, $options: "i" },
+        // category: { $regex: `^${req.query.category}$`, $options: "i" }  // to filter the exact category
+
+    });    
+  }
+
+  // Filter by brand
+  if (req.query.brand) {
+    productQuery = productQuery.find({
+      brand: { $regex: req.query.brand, $options: "i" },
+    });
+  }
+
+  // Filter by colors
+  if (req.query.colors) {
+    productQuery = productQuery.find({
+      colors: { $regex: req.query.colors, $options: "i" },
+    });
+  }
+
+  // Filter by sizes
+  if (req.query.sizes) {
+    productQuery = productQuery.find({
+      sizes: { $regex: req.query.sizes, $options: "i" },
+    });
+  }
+
+  // Filter by price range
+  if (req.query.price) {
+    const priceRange = req.query.price.split("-");
+    productQuery = productQuery.find({
+      price: { $gte: priceRange[0], $lte: priceRange[1] },
+    });
+  }
+
+  // Pagination
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await Product.countDocuments();
+
+  productQuery = productQuery.skip(startIndex).limit(limit);
+
+  const pagination = {};
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit,
+    };
+  }
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+    };
+  }
+
+  const products = await productQuery;
+
+  res.json({
+    status: "Success",
+    total,
+    results: products.length,
+    pagination,
+    message: "Product fetched successfully",
+    products,
+  });
 });
 
 // @desc Get single products
@@ -162,9 +263,17 @@ export const getProductsCtrl = asyncHandler(async (req, res) =>{
 export const getProductCtrl = asyncHandler(async (req, res) =>{
     // console.log(req.params);
     
-    const product = await Product.findById(req.params.id).populate("reviews")
+    const product = await Product.findById(req.params.id).populate({
+      path: "reviews",
+      populate:{
+        path: "user",
+        select: "fullname",
+      }
+    })
+    // console.log(product, "reviews");
+    
     if (!product) {
-        throw new Error("Product not found")
+      throw new Error("Product not found");
     }
     res.json({
         status: "Success",
@@ -179,31 +288,32 @@ export const getProductCtrl = asyncHandler(async (req, res) =>{
 // @access Public
 
 export const getProductUpdateCtrl = asyncHandler(async (req, res) =>{
-    const {name, description,category, sizes, colors, user, price, totalQty, brand} = req.body
-   const updateProduct = await Product.findByIdAndUpdate(
-        req.params.id,{
-            name, 
-            description,
-            category, 
-            sizes, 
-            colors, 
-            user, 
-            price, 
-            totalQty, 
-            brand,
-        }, 
-        {
-            new: true
-        }
-    );
-   if (!updateProduct) {
-    throw new Error("Product not updated")
-   }
-    res.json({
-        status: "Success",
-        message: "Product updated successfully",
-        updateProduct,
-    })
+  const {name, description,category, sizes, colors, user, price, totalQty, brand} = req.body
+  const updateProduct = await Product.findByIdAndUpdate(
+    req.params.id,{
+      name, 
+      description,
+      category, 
+      sizes, 
+      colors, 
+      user, 
+      price, 
+      totalQty, 
+      brand,
+    }, 
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  if (!updateProduct) {
+  throw new Error("Product not updated")
+  }
+  res.json({
+      status: "Success",
+      message: "Product updated successfully",
+      updateProduct,
+  })
 });
 
 export const getProductDeleteCtrl = asyncHandler(async (req, res) =>{

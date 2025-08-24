@@ -17,21 +17,21 @@ const stripe = new Stripe(process.env.STRIPE_KEY)
 
 export const createOrder = asyncHandler(async(req, res) =>{
   // find the coupon
-  const {coupon} = req?.query;
+  // const {coupon} = req?.query;
   
-  const couponFound = await Coupon.findOne({
-    code: coupon?.toUpperCase(),
-  });
-  if (couponFound?.isExpired) {
-    throw new Error("Coupon has expired");
-  }
+  // const couponFound = await Coupon.findOne({
+  //   code: coupon?.toUpperCase(),
+  // });
+  // if (couponFound?.isExpired) {
+  //   throw new Error("Coupon has expired");
+  // }
 
-  if (!couponFound) {
-    throw new Error("Coupon does not exist");
-  }
+  // if (!couponFound) {
+  //   throw new Error("Coupon does not exist");
+  // }
 
   // get discount
-  const discount = couponFound?.discount / 100;
+  // const discount = couponFound?.discount / 100;
   // Get the payload(customers, orderItems, shippingAddress, totalPrice);
   const {orderItems, shippingAddress, totalPrice } = req.body;    
   
@@ -51,9 +51,10 @@ export const createOrder = asyncHandler(async(req, res) =>{
     user: userFound._id,
     shippingAddress,
     orderItems,
-    totalPrice: couponFound ? totalPrice - totalPrice * discount : totalPrice,
+    // totalPrice: couponFound ? totalPrice - totalPrice * discount : totalPrice,
+    totalPrice
   })
-  console.log(order);
+  // console.log(order);
   
   // console.log(order);
   
@@ -68,7 +69,8 @@ export const createOrder = asyncHandler(async(req, res) =>{
       return product?._id.toString() === order?._id?.toString();
     });
     if (product) {
-      product.totalSold += order.qty;
+      // product.totalSold += order.qty;
+      product.totalSold = Number(product.totalSold || 0) + Number(order.qty);
     }   
     await product.save();
   });

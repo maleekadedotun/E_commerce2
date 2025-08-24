@@ -61,8 +61,25 @@ export const getAllCoupons = asyncHandler(async (req, res) =>{
 // @route POST/api/v1/coupons
 // @access Private/admin
 
+// export const getSingleCoupon = asyncHandler(async (req, res) =>{
+//     const coupon = await Coupon.findById(req.params.id);
+//     res.json({
+//         status: "Success",
+//         msg: "Coupon fetched",
+//         coupon,
+//     })
+// });
 export const getSingleCoupon = asyncHandler(async (req, res) =>{
-    const coupon = await Coupon.findById(req.params.id);
+    const coupon = await Coupon.findOne({code: req.query.code});
+    // check if coupon is found
+    if (coupon === null) {
+        throw new Error("Coupon not found");
+    }
+    // check if coupon as expired
+    if (coupon.isExpired) {
+        throw new Error("Coupon already expired")
+    }
+   
     res.json({
         status: "Success",
         msg: "Coupon fetched",
