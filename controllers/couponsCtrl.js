@@ -118,10 +118,16 @@ export const updateCoupon = asyncHandler(async (req, res) =>{
 // @access Private/admin
 
 export const deleteCoupon = asyncHandler(async (req, res) =>{
-    const coupon = await Coupon.findByIdAndDelete();
-
+    const { id } = req.params; // ✅ get id from URL params
+    const coupon = await Coupon.findByIdAndDelete(id);
+    if (!coupon) {
+        res.status(404)
+        throw new Error("Coupon not found");
+        
+    }
     res.json({
         status: "Success",
         msg: "Coupon deleted successfully",
+        id: coupon._id,
     })
 });

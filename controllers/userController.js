@@ -11,6 +11,7 @@ import { verifyToken } from "../utilis/verifyToken.js";
 
 export const registerUserCtrl = asyncHandler(
     async (req, res) =>{
+        // console.log("LOGIN BODY:", req.body);
         const {fullname, email, password} = req.body;
         // check if user exists
         const userExists = await User.findOne({email});
@@ -41,6 +42,7 @@ export const registerUserCtrl = asyncHandler(
 //@access  Public
 export const loginUserCtrl = asyncHandler(
     async (req, res) =>{
+        //   console.log("LOGIN BODY:", req.body);
         const {email, password} = req.body;
         // find the user in db by email only
         const userFound = await User.findOne({
@@ -50,7 +52,10 @@ export const loginUserCtrl = asyncHandler(
             res.json({
                 status: "success",
                 message: "User logged in successfully",
-                userFound,
+                userFound: {
+                    userFound: userFound?.fullname,
+                    isAdmin: userFound?.isAdmin,
+                },
                 token: generateToken(userFound._id)
             });
         }
@@ -64,14 +69,18 @@ export const loginUserCtrl = asyncHandler(
 //@route  Get /api/v1/users/register
 //@access  Private
 export const getUserProfileCtrl = asyncHandler(async(req, res) =>{
+    //  console.log(req.body, "profile");
+    console.log("UserAuthId:", req.userAuthId);   
     // find the user
     const user = await User.findById(req.userAuthId).populate("orders")
-    console.log(user);
+    console.log(user, "user");
     
     // get token from header
-    // const token = getTokenFromHeader(req)
+    const token = getTokenFromHeader(req)
+    // console.log(token);
+    
     // verify token
-    // const verified = verifyToken(token)
+    const verified = verifyToken(token)
     // console.log(req);
     
     res.json({
@@ -79,7 +88,25 @@ export const getUserProfileCtrl = asyncHandler(async(req, res) =>{
         msg: "User profile fetched successfully",
         user,
     })
-})
+});
+
+// export const getUserProfileCtrl = asyncHandler(async (req, res) => {
+//   const user = await User.findById(req.userAuthId).populate("orders");
+
+//   if (!user) {
+//     return res.status(404).json({
+//       status: "Fail",
+//       msg: "User not found",
+//     });
+//   }
+
+//   res.json({
+//     status: "Success",
+//     msg: "User profile fetched successfully",
+//     user,
+//   });
+// });
+
 
 
 //@desc   userAddress
@@ -87,6 +114,9 @@ export const getUserProfileCtrl = asyncHandler(async(req, res) =>{
 //@access  Private
 
 export const updateShippingAddressCtrl = asyncHandler(async(req, res) =>{
+    // console.log(req.body, "shippingAddress");
+    // console.log("UserAuthId:", req.userAuthId);   // 👈
+    
     const {firstName, lastName, address,city, 
     postalCode, country,province, phoneNumber} = req.body;
 
@@ -111,4 +141,4 @@ export const updateShippingAddressCtrl = asyncHandler(async(req, res) =>{
         msg: "User shipping address updated successfully",
         user,
     })
-})
+});

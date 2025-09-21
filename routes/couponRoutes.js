@@ -9,7 +9,7 @@ couponRoutes.post("/", isLoggedIn,isAdmin, createCouponsCtrl);
 couponRoutes.get("/", getAllCoupons);
 // couponRoutes.get("/single/:id", getSingleCoupon);
 couponRoutes.get("/single", getSingleCoupon);
-couponRoutes.put("/update/:id",isLoggedIn, isAdmin, updateCoupon);
+couponRoutes.put("/update/:id",isLoggedIn, updateCoupon);
 couponRoutes.delete("/delete/:id",isLoggedIn, isAdmin, deleteCoupon);
 
 export default couponRoutes;

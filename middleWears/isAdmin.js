@@ -13,10 +13,10 @@ const isAdmin = async(req, res, next) => {
         
     // check if isAdmin
     if (user.isAdmin) {
-        next()
+      next()
     }
     else{
-        next(new Error("Access denied, admin only"));
+      next(new Error("Access denied, admin only"));
     }
 };
 

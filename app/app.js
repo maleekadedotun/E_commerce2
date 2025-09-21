@@ -19,6 +19,12 @@ import couponRoutes from "../routes/couponRoutes.js";
 //db Connect
 dbConnect();
 const app = express();
+
+app.use(cors({
+  origin: "http://localhost:3000",   // your frontend
+  credentials: true,
+}));
+
 // cors
 app.use(cors());
 

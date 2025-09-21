@@ -64,16 +64,25 @@ export const createOrder = asyncHandler(async(req, res) =>{
   // Update the product Qty
   const products = await Product.find({_id: {$in: orderItems}})
 
-  orderItems?.map(async (order) => {
-    const product = products?.find((product) => {
-      return product?._id.toString() === order?._id?.toString();
-    });
-    if (product) {
-      // product.totalSold += order.qty;
-      product.totalSold = Number(product.totalSold || 0) + Number(order.qty);
-    }   
-    await product.save();
-  });
+  // orderItems?.map(async (order) => {
+  //   const product = products?.find((product) => {
+  //     return product?._id.toString() === order?._id?.toString();
+  //   });
+  //   if (product) {
+  //     // product.totalSold += order.qty;
+  //     product.totalSold = Number(product.totalSold || 0) + Number(order.qty);
+  //   }   
+  //   await product.save();
+  // });
+
+  // Instead of searching through products like this, query the DB directly for each order:
+  for (const order of orderItems) {
+  const product = await Product.findById(order._id); // ✅ get fresh document
+  if (product) {
+    product.totalSold = Number(product.totalSold || 0) + Number(order.qty);
+    await product.save(); // ✅ works now
+  }
+}
     
   // Make payment (Stripe)
   // Converted order items to have same structure that stripe needs.
@@ -118,7 +127,7 @@ export const createOrder = asyncHandler(async(req, res) =>{
 
 export const getAllOrdersCtrl = asyncHandler(async (req, res) =>{
   // find all orders
-  const orders = await Order.find();
+  const orders = await Order.find().populate("user");
   res.json({
     success: true,
     message: "All orders",
