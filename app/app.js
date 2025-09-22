@@ -20,13 +20,43 @@ import couponRoutes from "../routes/couponRoutes.js";
 dbConnect();
 const app = express();
 
-app.use(cors({
-  origin: "http://localhost:3000",   // your frontend
-  credentials: true,
-}));
+// app.use(cors({
+//   origin: "http://localhost:3000",   // your frontend
+//   credentials: true,
+// }));
+
+// db Connect
+// dbConnect();
+// const app = express();
+
+// CORS setup (put this here, before your routes)
+// const allowedOrigins = [
+//   "http://localhost:3000",                 
+//   "https://mern-stack-e-commerce-nhir.onrender.com", 
+//   "https://your-frontend.netlify.app" // <-- replace with your real frontend Netlify URL
+// ];
+
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     if (!origin) return callback(null, true);
+//     if (allowedOrigins.indexOf(origin) === -1) {
+//       const msg = `CORS policy error: This origin is not allowed - ${origin}`;
+//       return callback(new Error(msg), false);
+//     }
+//     return callback(null, true);
+//   },
+//   credentials: true,
+// }));
+
 
 // cors
 app.use(cors());
+
+
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
+
 
 // Stripe webHook
 // stripe instance
