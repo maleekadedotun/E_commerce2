@@ -105,9 +105,10 @@ export const createOrder = asyncHandler(async(req, res) =>{
       orderId: order?._id.toString()
     },
     mode: "payment",
-    success_url: "http://localhost/3000/success",
-    cancel_url: "http://localhost/3000/cancel"
+    success_url: "http://localhost:3000/success",  // ✅ update here for dev
+    cancel_url: "http://localhost:3000/cancel",    // ✅ update here for dev
   });
+
   res.send({url: session.url});
   // payment webhook
   // Update the user order
