@@ -57,7 +57,7 @@ https://mern-stack-e-commerce-aeqa.onrender.com
 ---
 
 ## 📂 GitHub Repository
-https://github.com/your-username/ecommerce-project
+https://github.com/maleekadedotun/E_commerce2.git
 
 ---
 
@@ -67,5 +67,5 @@ npm install
 npm run server
 ### Clone the repository
 ```bash
-git clone https://github.com/your-username/ecommerce-project
-cd ecommerce-project
+git https://github.com/maleekadedotun/E_commerce2.git
+cd E_commerce2
